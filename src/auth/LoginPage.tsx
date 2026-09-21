@@ -22,9 +22,30 @@ export function LoginPage() {
 
   }
 
+  const user = () => {
+    setUsername('bastien@example.com');
+    setPassword('tacostacos');
+  }
+
+  const admin = () => {
+    setUsername('admin@example.com');
+    setPassword('securepassword');
+  }
+
   return (
     <>
       <h2>Sign in</h2>
+
+      <div className='buttons'>
+        <button onClick={user}>
+          user
+        </button>
+        <button onClick={admin}>
+          admin
+        </button>
+
+      </div>
+
 
       <form onSubmit={handleSubmit}>
         <label>

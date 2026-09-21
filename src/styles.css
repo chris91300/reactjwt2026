@@ -32,3 +32,9 @@ label {
 button {
   width: fit-content;
 }
+
+.buttons {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 20px;
+}
