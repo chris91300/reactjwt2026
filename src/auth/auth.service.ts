@@ -36,3 +36,34 @@ export function logoutUser() {
     localStorage.removeItem("token");
 }
 
+
+export function hasRole(role: "USER" | "ADMIN") {
+    const userRole = getRole();
+    const currentRole = `ROLE_${role}`;
+
+    if (userRole === currentRole) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+export function hasRoleIn(roles: string[]) {
+
+}
+
+
+
+export function getRole() {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+        throw new Error("utilisateur non authentifié");
+    }
+    const payload = token.split(".")[1];
+    const data = window.atob(payload);
+    const parsedData = JSON.parse(data);
+    const scope = parsedData.scope;
+    const role = scope.split(" ")[0];
+    return role as string;
+}

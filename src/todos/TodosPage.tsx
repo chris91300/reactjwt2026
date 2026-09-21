@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router';
 
 import type { TodoItem } from './todo-item';
 import { createTodo, getTodos } from './todo.service';
-import { logoutUser } from '../auth/auth.service';
+import { hasRole, logoutUser } from '../auth/auth.service';
 
 export function TodosPage() {
   const navigate = useNavigate();
@@ -11,6 +11,8 @@ export function TodosPage() {
   const [title, setTitle] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const isAdmin = hasRole("ADMIN");
+
 
   useEffect(() => {
     async function loadTodos() {
@@ -67,23 +69,28 @@ export function TodosPage() {
         )}
       </ul>
 
-      <h2>Create a new todo item:</h2>
-      <form onSubmit={handleSubmit}>
-        <label>
-          <span>Title: </span>
-          <input
-            autoComplete="off"
-            value={title}
-            onChange={(event) => setTitle(event.target.value)}
-            required
-          />
-        </label>
-        <p>{errorMessage}</p>
+      {
+        isAdmin &&
+        <>
+          <h2>Create a new todo item:</h2>
+          <form onSubmit={handleSubmit}>
+            <label>
+              <span>Title: </span>
+              <input
+                autoComplete="off"
+                value={title}
+                onChange={(event) => setTitle(event.target.value)}
+                required
+              />
+            </label>
+            <p>{errorMessage}</p>
 
-        <button type="submit" disabled={!title.trim() || isSubmitting}>
-          {isSubmitting ? 'Adding…' : 'Add'}
-        </button>
-      </form>
+            <button type="submit" disabled={!title.trim() || isSubmitting}>
+              {isSubmitting ? 'Adding…' : 'Add'}
+            </button>
+          </form>
+        </>
+      }
 
       <button type="button" onClick={logout}>
         Déconnexion
