@@ -1,16 +1,25 @@
 import { type FormEvent, useState } from 'react';
 import { useNavigate } from 'react-router';
+import { login } from './auth.service';
 
 export function LoginPage() {
   const navigate = useNavigate();
   const [username, setUsername] = useState('bastien@example.com');
   const [password, setPassword] = useState('tacostacos');
+  const [errorMessage, setErrorMessage] = useState("");
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
     // TODO: authenticate against the backend before navigating.
-    navigate('/todos');
+    const response = await login(username, password);
+
+    if (response.success) {
+      navigate('/todos');
+    } else {
+      setErrorMessage(response.error)
+    }
+
   }
 
   return (
@@ -43,6 +52,7 @@ export function LoginPage() {
         </label>
 
         <button type="submit">Send</button>
+        <p>{errorMessage}</p>
       </form>
     </>
   );

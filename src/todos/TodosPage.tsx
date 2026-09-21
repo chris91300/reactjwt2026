@@ -3,12 +3,14 @@ import { useNavigate } from 'react-router';
 
 import type { TodoItem } from './todo-item';
 import { createTodo, getTodos } from './todo.service';
+import { logoutUser } from '../auth/auth.service';
 
 export function TodosPage() {
   const navigate = useNavigate();
   const [todos, setTodos] = useState<TodoItem[]>([]);
   const [title, setTitle] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
     async function loadTodos() {
@@ -37,7 +39,11 @@ export function TodosPage() {
       setTodos((currentTodos) => [...currentTodos, todo]);
       setTitle('');
     } catch (error) {
-      console.error('Unable to create todo', error);
+
+      if (error && typeof error === "object" && "message" in error) {
+        const errorMessage = error.message as string;
+        setErrorMessage(errorMessage)
+      }
     } finally {
       setIsSubmitting(false);
     }
@@ -45,6 +51,7 @@ export function TodosPage() {
 
   function logout() {
     // TODO: clear the authentication state once JWT authentication is implemented.
+    logoutUser();
     navigate('/');
   }
 
@@ -71,6 +78,7 @@ export function TodosPage() {
             required
           />
         </label>
+        <p>{errorMessage}</p>
 
         <button type="submit" disabled={!title.trim() || isSubmitting}>
           {isSubmitting ? 'Adding…' : 'Add'}
